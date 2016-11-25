@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * DataSet
  *
  * @ORM\Table(name="dataset")
- * @ORM\Entity(repositoryClass="Pdx\DatasetBundle\Repository\DataSetRepository")
+ * @ORM\Entity()
  * @Vich\Uploadable
  */
 class DataSet implements \JsonSerializable
