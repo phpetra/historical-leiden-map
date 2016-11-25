@@ -20,15 +20,15 @@ class DataSetMapType extends AbstractType
 
         $builder
             ->add('building', ChoiceType::class, [
-                'label'    => 'Pand kolom',
-                'choices'  => $csvColumns,
-                'required' => false,
-            ])
-            ->add('street', ChoiceType::class, [
                 'label'    => 'Kolom met HG-identifiers van panden',
                 'choices'  => $csvColumns,
                 'required' => false,
             ])
+//            ->add('street', ChoiceType::class, [
+//                'label'    => 'Kolom met HG-identifiers van straten',
+//                'choices'  => $csvColumns,
+//                'required' => false,
+//            ])
             ->add('borough', ChoiceType::class, [
                 'label'    => 'Kolom met HG-Identifiers van bonnen',
                 'choices'  => $csvColumns,
