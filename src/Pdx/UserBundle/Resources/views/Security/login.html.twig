@@ -1,0 +1,78 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>{{ 'account.create'|trans }}</h2>
+
+                <div class="well well-padded">
+                    <p>{{ 'account.create_intro'|trans|raw }}</p>
+                    <br/>
+
+                    <a href="{{ path('fos_user_registration_register') }}" class="btn btn-primary">
+                        <i class="fa fa-plus"></i>
+                        {{ 'account.create'|trans }}
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <h2>{{ 'account.signin'|trans }}</h2>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <div class="well well-padded">
+                    <form role="form" action="{{ path("fos_user_security_check") }}" method="post"
+                          class="form-horizontal login-form">
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+
+                        <div class="form-group">
+                            <label for="username">{{ 'form.username_or_email'|trans }}</label>
+                            <div class="input-group">
+                                <div class="input-group-addon"><span class="fa fa-user"></span></div>
+                                <input type="text" id="username" name="_username" value="{{ last_username }}"
+                                       class="form-control" placeholder="{{ 'security.login.username_or_email'|trans }}"
+                                       required autofocus>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">{{ 'form.password'|trans }}</label>
+                            <div class="input-group">
+                                <div class="input-group-addon"><span class="fa fa-lock"></span></div>
+                                <input type="password" id="password" name="_password" class="form-control"
+                                       placeholder="{{ 'security.login.password'|trans }}" required>
+                            </div>
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="remember_me" name="_remember_me"
+                                       value="on"> {{ 'security.login.remember_me'|trans }}
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit" id="_submit" name="_submit">
+                                {{ 'security.login.submit'|trans }}
+                            </button>
+
+                            <div class="pull-right">
+                                <a href="{{ path('fos_user_resetting_request') }}"> {{ 'account.request_new_password'|trans }}</a>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock fos_user_content %}

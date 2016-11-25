@@ -1,0 +1,43 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Preview dataset "{{ dataset.title }}"</h2>
+                <p>
+                    Controleer of de dataset goed ingelezen is.
+                    De namen, kolommen en eerste 20 records uit de dataset worden getoond. <br>
+                    Indien de gegevens in orde zijn, bevestig de upload dan door ‘OK’ te kiezen.
+                </p>
+
+                <a href="{{ path('manage-dataset-save-columns', {id: dataset.id}) }}" class="btn btn-info">
+                    Kolommen zijn OK!
+                </a>
+            </div>
+
+            <div class="col-md-6">
+                <p></p>
+                <p class="alert alert-info">
+                    Als de kolommen niet correct worden weergegeven, dan kon het CSV-bestand niet goed gelezen worden.
+                    Probeer dan het bestand opnieuw op te slaan als "utf-8" bestand en de gegevens te exporteren met een
+                    ";" (puntkomma) als scheidingsteken. Upload het bestand vervolgens opnieuw.
+                </p>
+
+                <a href="{{ path('manage-dataset-edit', {id: dataset.id}) }}" class="btn btn-danger">
+                    Opnieuw uploaden
+                </a>
+            </div>
+
+
+            <div class="col-md-12">
+                <hr/>
+
+                {{ html|raw }}
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

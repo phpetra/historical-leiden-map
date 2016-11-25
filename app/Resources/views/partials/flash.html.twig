@@ -1,0 +1,16 @@
+
+<script>
+    $(document).ready(function () {
+        {% if app.session.flashbag.has('notice') %}
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+        alertMessage('{{ flashMessage }}', 'alert-success');
+        {% endfor %}
+        {% endif %}
+
+        {% if app.session.flashbag.has('error') %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+        alertMessage('{{ flashMessage }}', 'alert-danger');
+        {% endfor %}
+        {% endif %}
+    });
+</script>

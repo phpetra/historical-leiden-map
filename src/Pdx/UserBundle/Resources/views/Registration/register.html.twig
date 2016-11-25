@@ -1,0 +1,37 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>{{ 'account.create'|trans }}</h2>
+
+                <div class="well well-padded">
+                    <h4>{{ 'account.register'|trans  }}</h4>
+                    <p>
+                        {{ 'account.register_intro'|trans|raw }}
+                    </p>
+                    <br/>
+                    <h4>{{ 'account.confirm_email'|trans }}</h4>
+                    <p>{{ 'account.confirm_email_help'|trans }}</p>
+
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <h2>{{ 'account.create'|trans }}</h2>
+
+                <div class="well well-padded">
+                    {% block fos_user_content %}
+                        {% include "PdxUserBundle:Registration:register_form.html.twig" %}
+                    {% endblock fos_user_content %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+

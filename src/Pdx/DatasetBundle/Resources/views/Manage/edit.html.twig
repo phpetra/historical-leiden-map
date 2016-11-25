@@ -1,0 +1,56 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+
+    {% use "bootstrap_3_layout.html.twig" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Dataset "{{ dataset.title }}"</h2>
+
+                {{ form_start(form, {'method': 'post', 'action': path('manage-dataset-update', {id: app.request.get('id')}), 'attr': {'class': ''}}) }}
+
+                <fieldset>
+                    {{ form_widget(form) }}
+                </fieldset>
+
+                <div>
+                    <input class="btn btn-primary" type="submit" value="Bewaar wijzigingen"/>
+                </div>
+
+                {{ form_end(form) }}
+
+            </div>
+            <div class="col-md-6">
+                <h3>Bewerk gegevens</h3>
+                <p class="alert alert-info">
+                    Wijzig de (metadata) gevegevens in het formulier hiernaast en klik op de knop om ze te bewaren. <br>
+                    Je kunt desgewenst ook een nieuw CSV-bestand uploaden.
+                </p>
+
+                <hr/>
+
+                <h3>Downloads</h3>
+                <p>Hier kun je je CSV-bestand (al dan niet verrijkt met de geometrieën) downloaden. Verschillende
+                    formaten zijn beschikbaar:</p>
+
+                <p><a href="{{ path('manage-csv-download', { file: dataset.csvName }) }}" class="btn btn-info">Oorspronkelijke CSV</a></p>
+
+                {% if dataset.status == 'geojson' %}
+
+                    <p><a href="{{ path('manage-csv-download', { file: dataset.csvName, type: 'geocoded' }) }}" class="btn btn-success">CSV + geometrieën</a></p>
+
+                    {% if dataset.mapping.building is not null %}
+                        <p><a href="{{ path('manage-csv-download', { file: dataset.csvName, type: 'building' }) }}" class="btn btn-warning">CSV met panden als geoJSON</a></p>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+

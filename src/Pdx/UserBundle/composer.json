@@ -1,0 +1,37 @@
+{
+    "name": "phpetra/userbundle",
+    "description": "Implementation of the FOSUSerbundle in a symfony2 project",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Petra Dreiskämper",
+            "email": "phpetra@xs4all.nl"
+        }
+    ],
+    "keywords": [
+        "custom symfony user bundle`"
+    ],
+    "license": [
+        "MIT"
+    ],
+    "require": {
+        "friendsofsymfony/user-bundle": "~2.0@dev"
+    },
+    "autoload": {
+        "psr-0": {
+            "Pdx\\UserBundle": ""
+        }
+    },
+    "target-dir": "Pdx/UserBundle",
+    "repositories": [
+        {
+            "type" : "vcs",
+            "url" : "https://github.com/phpetra/UserBundle.git"
+        }
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "v1-dev"
+        }
+    }
+}

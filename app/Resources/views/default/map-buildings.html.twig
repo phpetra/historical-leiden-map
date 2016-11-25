@@ -1,0 +1,299 @@
+{% extends "::base.html.twig" %}
+
+{% set active_page = 'map' %}
+
+{% block content %}
+    <div id="map"></div>
+
+    {% include ':partials:spinner.html.twig' %}
+
+    <div id="legend">
+        <h4 id="datasetTitle"></h4>
+
+        <label>Beschikbare filters</label><br/>
+        <select id="filter-column" name="filter-column"></select>
+        <select id="numeric-column" name="numeric-column"></select>
+
+        <div id="properties"></div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        var dataset = {};
+        var cache = {};
+
+        // needed to be able to destroy the control - layers
+        var currentLayers = [];
+        var currentLegends = [];
+
+        var overlayMaps = [
+            {
+                group: "Datasets",
+                collapsed: true,
+                layers: []
+            }
+        ];
+
+        $(document).ready(function () {
+
+            // init map first
+            var map = L.map('map', {
+                center: [52.16, 4.49], // leiden
+                zoom: 17,
+                maxZoom: 18
+            });
+
+            // add default Map
+            map.addLayer(cartodb);
+
+            var panel = new L.Control.PanelLayers(baseMaps,overlayMaps, { collapsibleGroups: true }).addTo(map);
+
+            // get dataset details from API
+            loadDataset("{{ app.request.baseUrl }}/api/dataset/{{ id }}", createSimpleLayer);
+
+            // creates just the one layer with all data
+            function createSimpleLayer(dataset) {
+                clearControls();
+
+                // simply display all data
+                loadGeoJson(dataset.id, "{{ app.request.baseUrl }}/api/geojson/building", cache, function (data) {
+                    var col = 'crimson';
+                    var l = L.geoJson(data, {
+                        style: { color: col, opacity: 0.9, weight: 1, fillOpacity: .35 },
+                        onEachFeature: handleFeature
+                    });
+                    // add to control
+                    panel.addOverlay(l, '<span class="fa fa-square" style="color: ' + col + '"></span>&nbsp; Alle panden', 'Datasets');
+
+                    // add to map
+//                    map.addLayer(l);
+//                    map.fitBounds(l.getBounds(), {
+//                        padding: [0, 0]
+//                    });
+                });
+
+                createDatasetLayers(dataset);
+            }
+
+            function createDatasetLayers(dataset) {
+
+                // INIT stuffs
+                $('#datasetTitle').text(dataset.title);
+
+                if (dataset['numeric-filters'].length > 0) {
+                    populateFilterOptions('#numeric-column', dataset['numeric-filters']);
+                } else {
+                    $('#numeric-column').hide();
+                }
+                if (dataset['string-filters'].length > 0) {
+                    populateFilterOptions('#filter-column', dataset['string-filters']);
+                } else {
+                    $('#filter-column').hide();
+                }
+
+                /** NUMERIC FILTERS */
+                // add event to create numeric filtered layers
+                $('#numeric-column').on('change', function () {
+                    var column = $('#numeric-column').val();
+                    if (column.length > 1) {
+                        displayChloroThingies(dataset, column);
+                    }
+                });
+
+                /** STRING FILTERS */
+                // add event to create the filtered layers
+                $('#filter-column').on('change', function () {
+                    var column = $('#filter-column').val();
+                    if (column.length > 1) {
+                        displayStringColumnAsLayers(dataset, column);
+                    }
+                });
+
+
+                var grades = [];
+                function getColor(d) {
+                    var r = d > grades[8] ? sequentialColors[8] :
+                            d > grades[7] ? sequentialColors[7] :
+                            d > grades[6] ? sequentialColors[6] :
+                                    d > grades[5] ? sequentialColors[5] :
+                                    d > grades[4] ? sequentialColors[4] :
+                                            d > grades[3] ? sequentialColors[3] :
+                                            d > grades[2] ? sequentialColors[2] :
+                                                    d > grades[1] ? sequentialColors[1] :
+                                                    d >= grades[0] ? sequentialColors[0] :
+                                                            '#ccc'
+                    return r;
+                }
+
+                // creates an array of no more than 9 elements for the chloropeth thing
+                function createTaxAmountRanges(amounts) {
+                    var total = amounts.length;
+                    sortNumeric(amounts);
+
+                    var min = amounts[0];
+                    var max = amounts[total-1];
+                    var step = ((max - min) / 8).toFixed(2);
+//                    console.log(amounts);
+//                    console.log(total);
+//                    console.log(min);
+//                    console.log(max);
+//
+//                    console.log(step);
+                    return new Array(9)
+                            .join().split(',')
+                            .map(function (item, index) {
+                                        return (index * step) + min;
+                                    }
+                            )
+                }
+
+                /** Displays all unique values of one column as individual layers (alle "beroepen" bv) */
+                function displayChloroThingies(dataset, columnName) {
+                    clearControls();
+                    $('.spinner-overlay').removeClass('hide');
+
+                    // get geoJSON data from buildings file
+                    //var promise = $.getJSON("{{ app.request.baseUrl }}/serve/geojson/" + dataset.csvName);
+                    //promise.then(function (data) {
+                    loadGeoJson(dataset.id, "{{ app.request.baseUrl }}/api/geojson/building", cache, function (data) {
+
+                        // get all the money options
+                        var bedragen = [];
+                        var all = L.geoJson(data, {
+                            onEachFeature: function (feature) {
+                                if (feature.properties[columnName] > 0) {
+                                    var x = parseFloat(feature.properties[columnName]);
+                                    if ($.inArray(x) == -1) {
+                                        bedragen.push(x);
+                                    }
+                                }
+                            }
+                        });
+                        map.fitBounds(all.getBounds(), {
+                            padding: [5, 5]
+                        });
+                       // crunch the numbers and set the legend
+                        bedragen = bedragen.filter(onlyUnique);
+                        grades = createTaxAmountRanges(bedragen);
+
+                        var legend = L.control({position: 'bottomleft'});
+                        legend.onAdd = function (map) {
+                            var div = L.DomUtil.create('div', 'info right-legend');
+                            div.innerHTML = '';
+                            div.innerHTML += '<h4>Legenda ' + columnName + '</h4>';
+                            // loop through our density intervals and generate a label with a colored square for each interval
+                            for (var i = 0; i < grades.length-1; i++) {
+                                div.innerHTML +=
+                                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                                        grades[i].toFixed(2) + (grades[i + 1].toFixed(2) ? '&ndash; ' + grades[i + 1].toFixed(2) + ' <br>' : '+');
+                            }
+                            div.innerHTML += '<br><i style="background: #ccc"></i>Geen waarde';
+                            return div;
+                        };
+                        currentLegends.push(legend);
+                        legend.addTo(map);
+
+                        // add the stylized layer to the map
+                        var l = L.geoJson(data, {
+                            style: function (feature, layer) {
+                                return {
+                                    fillColor: getColor(feature.properties[columnName]),
+                                    weight: 1,
+                                    opacity: 1,
+                                    color: 'white',
+                                    dashArray: '',
+                                    fillOpacity: 0.7
+                                }
+                            },
+                            onEachFeature: handleFeature
+                        }).addTo(map);
+
+                        $('.spinner-overlay').addClass('hide');
+                    });
+                }
+
+
+                /** Displays all unique values of one column as individual layers (alle "beroepen" bv) */
+                function displayStringColumnAsLayers(dataset, columnName) {
+                    clearControls();
+                    $('.spinner-overlay').removeClass('hide');
+
+                    // get geoJSON data from buildings file
+                    //var promise = $.getJSON("{{ app.request.baseUrl }}/serve/geojson/" + dataset.csvName);
+                    //promise.then(function (data) {
+                    loadGeoJson(dataset.id, "{{ app.request.baseUrl }}/api/geojson/building", cache, function (data) {
+                        // get all unique values from the specified column into a new array (all "beroepen" for instance)
+                        var occupations = [];
+                        var all = L.geoJson(data, {
+                            onEachFeature: function (feature) {
+                                if (feature.properties[columnName].length > 2) {
+                                    if ($.inArray(feature.properties[columnName], occupations) == -1) {
+                                        occupations.push(feature.properties[columnName]);
+                                    }
+                                }
+                            }
+                        });
+                        map.fitBounds(all.getBounds(), {
+                            padding: [5, 5]
+                        });
+
+                        var layerCount = occupations.length;
+
+                        // create a separate layer for the unique values and filter only the matching ones
+                        $.each(occupations, function (index, beroep) {
+                            var counter = 0;
+                            var col = differenceColors[index];
+                            // use more colors if we need to
+                            if (layerCount > 12) {
+                                col = namedColors[index];
+                            }
+
+                            var l = L.geoJson(data, {
+                                style: {color: col, opacity: 0.9, weight: 1, fillOpacity: .35},
+                                onEachFeature: handleFeature,
+                                filter: function (feature, layer) {
+                                    if (feature.properties[columnName] == beroep) {
+                                        counter++;
+                                        return true;
+                                    }
+                                }
+                            }).addTo(map);
+                            currentLayers.push(l);
+
+                            //control.addOverlay(l, '<span class="fa fa-2x fa-user" style="color:' + differenceColors[index] + '"></span>&nbsp;' + beroep + ' ('+ counter + ')');
+                            panel.addOverlay(l, '<span class="fa fa-user" style="color: ' + col + '"></span>&nbsp;' + beroep + ' ('+ counter + ')', 'Datasets');
+                        });
+
+                        $('.spinner-overlay').addClass('hide');
+                    });
+
+                }
+            };
+
+
+            // clear layer controls and legends
+            function clearControls() {
+                //clear previous legend controls
+                $.each(currentLegends, function (index, layer) {
+                    layer.removeFrom(map);
+                });
+                currentLegends = [];
+
+                //clear previous layers form map and control
+                $.each(currentLayers, function (index, layer) {
+                    map.removeLayer(layer);
+                    panel.removeLayer(layer);
+                });
+                currentLayers = [];
+
+            }
+
+        })
+        ;
+
+    </script>
+
+{% endblock %}

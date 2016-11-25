@@ -1,0 +1,13 @@
+services:
+    pdx_csv.reader:
+        class: Pdx\Csv\Reader
+        arguments: ["@elo_filesystem", ""]
+
+    pdx_csv.writer:
+        class: Pdx\Csv\Writer
+        arguments: ["@elo_filesystem", ""]
+
+    pdx_csv.geocoder:
+        class: Pdx\Csv\GeoCoder
+        arguments: ["@elo_filesystem", ""]
+

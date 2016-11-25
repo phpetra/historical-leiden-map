@@ -1,0 +1,253 @@
+{% extends "::base.html.twig" %}
+
+{% set active_page = 'map' %}
+
+{% block content %}
+    <div id="map"></div>
+
+    <div id="legend">
+        <h4>Kleurenwaaier</h4>
+        <h4 id="datasetTitle"></h4>
+
+        <label>Beschikbare filters</label><br/>
+        <select id="first-filter" name="first-filter"></select>
+        <select id="second-filter" name="second-filter" class="hide"></select>
+
+        <div id="properties"></div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        var dataset = {};
+        var cache = {};
+        var firstColumn = '';
+
+        // needed to be able to destroy the control - layers
+        var currentLayers = [];
+        var currentLegends = [];
+
+        var overlayMaps = [
+            {
+                group: "Datasets",
+                collapsed: true,
+                layers: []
+            }
+        ];
+
+
+        $(document).ready(function () {
+
+            // init map first
+            var map = L.map('map', {
+                center: [52.16, 4.49], // leiden
+                zoom: 17,
+                maxZoom: 18
+            });
+
+            // add default Map
+            map.addLayer(cartodb);
+
+            var panel = new L.Control.PanelLayers(baseMaps, overlayMaps, {collapsibleGroups: true}).addTo(map);
+
+            // get dataset details from API
+            loadDataset("{{ app.request.baseUrl }}/api/dataset/{{ id }}", createDatasetLayers);
+
+            function createDatasetLayers(dataset) {
+
+                // INIT stuffs
+                $('#datasetTitle').text(dataset.title);
+
+                if (dataset['string-filters'].length > 0) {
+                    populateFilterOptions('#first-filter', dataset['string-filters']);
+                } else {
+                    $('#first-filter').hide();
+                }
+
+                /** FILTERS */
+                // first column holds the column names available to users, teh second column has the values that get populated (from where?)
+                $('#first-filter').on('change', function () {
+                    var column = $('#first-filter').val();
+                    if (column.length > 1) {
+                        // populate the second thing
+                        firstColumn = column;
+                        displaySecondFilter(dataset, column);
+                    }
+                });
+
+
+                $('#second-filter').on('change', function () {
+                    var option = $('#second-filter').val();
+                    if (option.length > 1) {
+                        displayChloroThingies(dataset, firstColumn, option);
+                    }
+                });
+
+
+                var grades = [];
+
+                function getColor(d) {
+                    var r = d > grades[8] ? sequentialColors[8] :
+                            d > grades[7] ? sequentialColors[7] :
+                                    d > grades[6] ? sequentialColors[6] :
+                                            d > grades[5] ? sequentialColors[5] :
+                                                    d > grades[4] ? sequentialColors[4] :
+                                                            d > grades[3] ? sequentialColors[3] :
+                                                                    d > grades[2] ? sequentialColors[2] :
+                                                                            d > grades[1] ? sequentialColors[1] :
+                                                                                    d >= grades[0] ? sequentialColors[0] :
+                                                                                            '#ccc'
+                    return r;
+                }
+
+                // creates an array of no more than 9 elements for the chloropeth thing
+                function createTaxAmountRanges(amounts) {
+                    var total = amounts.length;
+                    sortNumeric(amounts); //makes sure only unique values survive
+
+                    var min = amounts[0];
+                    var max = amounts[total - 1];
+
+                    if ((max - min) < 9) {
+                        var min = 0;
+                        var step = 1;
+                    } else {
+                        var step = ((max - min) / 8).toFixed(2);
+                    }
+                    //console.log(amounts);
+//                    console.log(total);
+//                    console.log(min);
+//                    console.log(max);
+
+                    return new Array(9)
+                            .join().split(',')
+                            .map(function (item, index) {
+                                        return (index * step) + min;
+                                    }
+                            )
+                }
+
+                // go through the geojson properties to find all UNIQUE VALUES to populate the select filter with
+                function displaySecondFilter(dataset, columnName) {
+                    loadGeoJson(dataset.id, "{{ app.request.baseUrl }}/api/geojson/neighbourhood", cache, function (data) {
+                        var options = [];
+
+                        L.geoJson(data, {
+                            onEachFeature: function (feature) {
+                                if (feature.properties[columnName]) {
+                                    //console.log(feature.properties[columnName]);
+                                    if (jQuery.inArray(feature.properties[columnName], options) == -1) {
+                                        options.push(feature.properties[columnName]);
+                                    }
+                                }
+                                return true;
+                            }
+                        });
+
+                        populateFilterOptions('#second-filter', options);
+                        $('#second-filter').removeClass('hide');
+                    });
+                }
+
+
+                /** Displays all unique values of one column as individual layers (alle "beroepen" bv) */
+                function displayChloroThingies(dataset, columnName, columnValue) {
+                    clearControls();
+                    $('.spinner-overlay').removeClass('hide');
+
+                    loadGeoJson(dataset.id, "{{ app.request.baseUrl }}/api/geojson/neighbourhood", cache, function (data) {
+
+                        // only match a specific profession
+                        var counters = [0];
+                        var thingyTotal = 0;
+                        var all = L.geoJson(data, {
+                            onEachFeature: function (feature) {
+                                if (feature.properties[columnName] == columnValue) {
+                                    // pass the numbers of aantal to separate array
+                                    var x = feature.properties['aantal'];
+                                    counters.push(x);
+                                    thingyTotal += x;
+                                    return true;
+                                }
+                            }
+                        });
+
+                        map.fitBounds(all.getBounds(), {
+                            padding: [5, 5]
+                        });
+
+                        // crunch the numbers and set the legend
+                        counters = counters.filter(onlyUnique);
+                        grades = createTaxAmountRanges(counters);
+
+                        var legend = L.control({position: 'bottomleft'});
+                        legend.onAdd = function (map) {
+                            var div = L.DomUtil.create('div', 'info right-legend');
+                            div.innerHTML = '';
+                            div.innerHTML += '<h4>Legenda ' + columnValue + '</h4>';
+                            div.innerHTML += 'Totaal: ' + thingyTotal + '<br>';
+                            // loop through our density intervals and generate a label with a colored square for each interval
+                            for (var i = 0; i < grades.length - 1; i++) {
+                                div.innerHTML +=
+                                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                                        grades[i].toFixed(2) + (grades[i + 1].toFixed(2) ? '&ndash; ' + grades[i + 1].toFixed(2) + ' <br>' : '+');
+                            }
+                            div.innerHTML += '<br><i style="background: #ccc"></i>Leeg';
+                            return div;
+                        };
+                        currentLegends.push(legend);
+                        legend.addTo(map);
+
+                        // add the stylized layer to the map
+                        var l = L.geoJson(data, {
+                            style: function (feature, layer) {
+                                return {
+                                    fillColor: getColor(feature.properties['aantal']),
+                                    weight: 1,
+                                    opacity: 1,
+                                    color: '#333',
+                                    dashArray: '',
+                                    fillOpacity: 0.7
+                                }
+                            },
+                            // and use the same filter to only display one "layer" (of bakkers) at a time
+                            filter: function (feature, layer) {
+                                if (feature.properties[columnName] == columnValue) {
+                                    return true;
+                                }
+                            },
+                            onEachFeature: handleFeature
+                        }).addTo(map);
+
+                        currentLayers.push(l);
+                        $('.spinner-overlay').addClass('hide');
+                    });
+                }
+
+            }
+
+
+            // clear layer controls and legends
+            function clearControls() {
+                //clear previous legend controls
+                $.each(currentLegends, function (index, layer) {
+                    layer.removeFrom(map);
+                });
+                currentLegends = [];
+
+                //clear previous layers form map and control
+                $.each(currentLayers, function (index, layer) {
+                    map.removeLayer(layer);
+                    panel.removeLayer(layer);
+                });
+                currentLayers = [];
+            }
+
+        })
+        ;
+
+    </script>
+
+{% endblock %}

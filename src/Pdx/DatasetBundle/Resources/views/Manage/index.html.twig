@@ -1,0 +1,152 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Mijn datasets</h1>
+
+                {% if datasets is empty %}
+                <p>Er zijn (nog) geen datasets.</p>
+                {% else %}
+
+                <p>
+                    Hieronder het overzicht van je datasets.
+                </p>
+
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>Naam</th>
+                        <th>Dataset</th>
+                        <th>Gemaakt</th>
+                        <th>Status</th>
+                        <th>Opties</th>
+                        <th>Klaar</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for set in datasets %}
+                        <tr>
+                            <td>
+                                {{ set.title }}
+                            </td>
+
+                            <td>
+                                {{ set.csvName }}
+
+                                {#<a href="{{ vich_uploader_asset(set, 'csvFile') }}" title="Bekijk het bestand">#}
+                                {#{{ set.csvName }}</a>#}
+                            </td>
+                            <td>{{ set.createdAt|date('d-m-Y H:i:s') }}</td>
+                            <td>
+                                {% if set.status is null %}
+                                    in voorbereiding
+                                {% else %}
+                                    {{ set.status }}
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <div class="btn-group action">
+                                    <a href="{{ path('manage-dataset-preview', {'id': set.id }) }}"
+                                       class="btn btn-xs btn-success" title="Preview het bestand">
+                                        preview
+                                    </a>
+                                    <a href="{{ path('manage-dataset-map', {'id': set.id }) }}"
+                                       class="btn btn-xs btn-primary" title="Map de velden">
+                                        mapping
+                                    </a>
+
+                                    <a href="{{ path('manage-csv-geocode', {'file': set.csvName, 'datasetId': set.id }) }}"
+                                       class="btn btn-xs btn-info" title="Voeg geometrieën toe">
+                                        <i class="fa fa-map-marker"></i> geocodeer
+                                    </a>
+
+                                    {% if app.user.username == 'dreis' %}
+                                        <a href="{{ path('manage-csv-geojson', {'file': set.csvName, 'datasetId': set.id }) }}"
+                                           class="btn btn-xs btn-warning" title="Genereer de geoJSON files opnieuw">
+                                            geojson
+                                        </a>
+                                    {% endif %}
+                                </div>
+
+                            </td>
+
+                            <td>
+                                {% if set.status == 'geojson' %}
+                                    <i class="pos fa fa-check-square-o"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group action">
+                                    <a href="{{ path('manage-dataset-edit', {'id': set.id }) }}"
+                                       class="btn btn-xs btn-success" title="Bewerk deze set">
+                                        bewerk
+                                    </a>
+
+                                </div>
+                                <div class="pull-right">
+                                    <a href="{{ path('manage-dataset-delete', {'id': set.id }) }}"
+                                       title="Verwijder de gehele dataset" class="btn btn-xs btn-danger delete"><i
+                                                class="fa fa-trash"></i> </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <p>
+                            Zie de pagina met uitleg voor een uitgebreidere omschrijving van de stappen.
+                        </p>
+                        <a href="{{ path('manage-dataset-info') }}" class="btn btn-default">uitleg</a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <ul>
+                                <li>
+                                    <label>Status = in voorbereiding </label>
+                                    <p>Dit betekent dat het CSV-bestand is geüploaded maar dat de kolommen nog niet
+                                        gemapped
+                                        zijn.</p>
+                                </li>
+                                <li>
+                                    <label>Status = mapped </label>
+                                    <p>Dit betekent dat de kolommen gemapped zijn maar dat het geocoderen nog niet heeft
+                                        plaatsgevonden.</p>
+                                </li>
+                                <li>
+                                    <label>Status = geocoded </label>
+                                    <p>Dit betekent dat het geocoderen is afgerond maar dat er nog geen geojson
+                                        bestanden
+                                        gemaakt zijn (die nodig zijn voor de presentatie op de kaart.</p>
+                                </li>
+                                <li>
+                                    <label>Status = geojson </label>
+                                    <p>Dit betekent dat de geojson bestanden klaar zijn en dat de set op de kaart(en) te
+                                        zien moet zijn.</p>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>Publiceren van je dataset</h2>
+
+                <p>
+                    Om je dataset op deze kaart te kunnen publiceren moet die in de vorm van een CSV-bestand worden
+                    aangeleverd en aan de eisen zoals rechts hiernaast beschreven, voldoen.
+                </p>
+                <hr/>
+                <p>
+                    <label>Het publiceren van je dataset gaat in een aantal stappen:</label>
+                </p>
+                <ul>
+                    <li>
+                        <h4>Stap 1: Nieuwe dataset uploaden</h4>
+                        <p>Vul de (metadata) gegevens over je dataset in bij het formulier onder <a
+                                    href="{{ path('manage-dataset-new') }}">Nieuwe dataset</a>
+                            en upload daar je CSV-bestand. Na uploaden wordt door de applicatie
+                            gecontroleerd of je set bruikbaar is.
+                        </p>
+                    </li>
+                    <li>
+                        <h4>Stap 2: Mappen van kolommen</h4>
+                        <p>
+                            Omdat het systeem niet weet welke kolommen in je CSV welke gegevens bevatten moet je dat
+                            aangeven. Zodat de juiste kolommen gebruikt worden bij het geocoderen.
+                        </p>
+                    </li>
+                    <li>
+                        <h4>Stap 3: Geocoderen</h4>
+                        <p>
+                            Met behulp van de Historische Geocoder worden de geometrieën opgehaald van de unieke
+                            identiefiers (van pand, bon of wijk) die in je dataset staan.
+                            Dit proces kun je starten door op de <a href="{{ path('manage-dataset-index') }}">
+                                overzichtspagina van je
+                                datasets</a> op de knop "geocodeer" van de desbetreffende set te klikken.
+                        </p>
+                        <p>
+                            Afhankelijk van de grootte van de dataset kan het even duren voordat alle geometrieën zijn
+                            opgehaald.
+                            Er wordt automatisch een bevestigingsemail verstuurd als dit proces is voltooid.
+                        </p>
+                    </li>
+
+                </ul>
+
+                <p class="alert alert-success">
+                    Als alles is goed gegaan, is de dataset daarna op de kaarten beschikbaar. Afhankelijk van de
+                    in de dataset aanwezige data (panden, bonnen, wijken of alledrie), zijn de respectievelijke knoppen
+                    zichtbaar op de pagina met <a href="{{ path('maps') }}">beschikbare datasets</a>.
+                </p>
+
+            </div>
+
+
+            <div class="col-md-4">
+                {% include '@PdxDataset/Manage/partial.criteria.html.twig' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

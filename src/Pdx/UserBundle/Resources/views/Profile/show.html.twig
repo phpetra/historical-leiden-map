@@ -1,0 +1,42 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .dl-kop {
+            display: inline-block;
+            width: 20%;
+            font-weight: bold;
+            color: #834c4b;
+        }
+
+        .dl-body {
+            margin-left: 20px
+        }
+    </style>
+{% endblock %}
+
+{% block fos_user_content %}
+
+    <div class="container user-profile">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="row well">
+                    <div class="col-md-6">
+                        <h2>{{ 'account.profile'|trans }}</h2>
+                        <p>{{ 'account.profile_intro'|trans }}</p>
+
+                        {% include "FOSUserBundle:Profile:show_content.html.twig" %}
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock fos_user_content %}

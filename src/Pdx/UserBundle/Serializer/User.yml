@@ -1,0 +1,15 @@
+Pdx\UserBundle\Entity\User:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            type: integer
+            groups: [api, admin]
+        username:
+            expose: true
+            type: string
+            groups: [api, admin]
+        email:
+            expose: true
+            type: string
+            groups: [api, admin]

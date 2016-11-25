@@ -1,0 +1,35 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+
+    <div class="container user-profile">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>{{ 'account.profile'|trans }}</h2>
+                        <p>{{ 'account.profile_edit_intro'|trans }}</p>
+
+                        <form action="{{ path('account-profile-save') }}" {{ form_enctype(form) }} method="POST" class="form-horizontal well">
+
+                            {{ form_widget(form) }}
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <input type="submit" class="btn btn-primary" value="{{ 'profile.edit.submit'|trans }}" />
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="col-md-6">
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock fos_user_content %}
+

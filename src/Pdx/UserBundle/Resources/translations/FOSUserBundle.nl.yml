@@ -1,0 +1,138 @@
+# Group
+group:
+    edit:
+        submit: Groep bijwerken
+    show:
+        name: Groep naam
+    new:
+        submit: Groep aanmaken
+    flash:
+        updated: De groep is bijgewerkt
+        created: De groep is aangemaakt
+        deleted: De groep is verwijderd
+
+# Security
+"Bad credentials": Je gebruikersnaam of wachtwoord is ongeldig.
+"User account is disabled.": Je account is nog niet geactiveerd.
+"User account is locked.":   De gebruikersaccount is afgesloten.
+"User account has expired.": De periode om je account te activeren is verlopen.
+"User credentials have expired.": Je gebruikersnaam of wachtwoord zijn verlopen..
+
+security:
+    login:
+        username: "Gebruikersnaam:"
+        password: "Wachtwoord:"
+        remember_me: Onthoud mijn gegevens
+        submit: Inloggen
+        username_or_email: "Gebruikersnaam of E-mailadres"
+
+# Profile
+profile:
+    show:
+        username: Gebruikersnaam
+        email: E-mail
+    edit:
+        submit: Bijwerken
+    flash:
+        updated: Je profiel is bijgewerkt
+
+# Password change
+change_password:
+    submit: Wachtwoord wijzigen
+    flash:
+        success: Het wachtwoord is gewijzigd
+
+# Registration
+registration:
+    check_email: Er is een e-mail verstuurd naar %email% met daarin een activatielink om je account te activeren. Je hebt 24 uur de tijd om je account te activeren.
+    confirmed: Gefeliciteerd %username%, je account is nu geactiveerd.
+    back: Terug naar de oorspronkelijke pagina.
+    submit: Registreer
+    flash:
+        user_created: De gebruiker is geregistreerd.
+    email:
+        subject: Historisch Leiden op de kaart - bevestig e-mailadres
+        message: |
+            Welkom %username%!
+
+            We hebben nu een account voor je aangemaakt maar je moet nog wel even bevestigen dat dit e-mailadres daar bij hoort.
+
+            Klik op de deze link %confirmationUrl% om je mailadres te valideren.
+
+            Deze e-mail is autmatisch gegenereerd
+
+# Password resetting
+resetting:
+    password_already_requested: Voor deze gebruiker is binnen de laatste 24 uur al een nieuw wachtwoord aangevraagd.
+    check_email: Er is een e-mail verstuurd naar %email% met daarin een link om uw wachtwoord te resetten.
+    request:
+        invalid_username: De gebruiker "%username%" bestaat niet.
+        username: "Gebruikersnaam of e-mailadres:"
+        submit: Reset wachtwoord
+    reset:
+        submit: Wijzig wachtwoord
+    flash:
+        success: Het wachtwoord is succesvol gereset
+    email:
+        subject: Historisch Leiden op de kaart - nieuw wachtwoord aangevraagd
+        message: |
+            Beste %username%!
+
+            We hebben een verzoek ontvangen om het wachtwoord van je account te resetten.
+
+            Klik op de volgende link om een nieuw wachtwoord te maken:
+            %confirmationUrl%
+
+            Als je niet op de link kunt klikken dan kun je onderstaande regel in de adresbalk van je internetbrowser zetten om de pagina te bereiken.
+            %confirmationUrl%
+
+
+# Global strings
+layout:
+    logout: Uitloggen
+    login: Inloggen
+    register: Registreren
+    logged_in_as: Ingelogd als %username%
+
+# Form field labels
+form:
+    group_name: "Groep naam:"
+    username: "Gebruikersnaam:"
+    email: "E-mail:"
+    current_password: "Je huidige wachtwoord:"
+    password: "Wachtwoord:"
+    password_confirmation: "Wachtwoord ter controle:"
+    new_password: "Nieuw wachtwoord:"
+    new_password_confirmation: "Wachtwoord ter controle:"
+    username_or_email: "Gebruikersnaam of E-mailadres"
+
+# Petra's extra stuff
+account:
+    register:           Registreren
+    register_confirm:   Account bevestigd!
+    signin:             Inloggen
+    change_email:       E-mailadres wijzigen
+    change_password:    Wachtwoord wijzigen
+    settings:           Account instellingen
+    settings_intro:     Wijzig de instellingen van je account.
+    edit_profile:       Profiel aanpassen
+    request_new_password: Nieuw wachtwoord aanvragen
+    create:             Account aanmaken
+    profile:            Je profiel
+    profile_intro:      Hieronder de profielgegevens zoals die op dit moment bij ons bekend zijn:
+    profile_edit_intro: Pas hier uw profielgegevens aan. Let s.v.p op de verplichte velden.
+    register_intro: |
+        Om een account aan te maken heb je een e-mailadres en een wachtwoord nodig.
+        Die kun je opgeven in het formulier hiernaast.
+    confirm_email: E-mailadres bevestigen
+    confirm_email_help: |
+        Na de aanmelding wordt binnen enkele minuten een e-mail met daarin een activatie-linkje, verstuurd naar het opgegeven e-mailadres.
+        Je hebt vervolgens 24 uur de tijd om dit e-mailadres te bevestigen. Zodra dat gedaan is kun je inloggen op de site.
+    create_intro:       |
+        Om gebruik te maken van <i>Historisch Leiden in Kaart</i> moet je een account aanmaken.<br/><br/>
+        Dat kan via de knop hieronder.
+    change_password_intro: |
+        Je kunt hier je wachtwoord wijzigen. Vul eenmaal je oude en twee keer je nieuwe wachtwoord in.
+
+
+

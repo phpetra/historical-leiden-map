@@ -1,0 +1,41 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Dataset "{{ dataset.title }}"</h2>
+
+                {{ form_start(form, {'method': 'post', 'action': path('manage-dataset-map-save', {id: app.request.get('id')}), 'attr': {'class': ''}}) }}
+
+                <fieldset>
+                    {{ form_widget(form) }}
+                </fieldset>
+
+                <div>
+                    <input class="btn btn-primary" type="submit" value="Bewaar mapping"/>
+                </div>
+
+                {{ form_end(form) }}
+
+            </div>
+
+            <div class="col-md-6">
+
+                <h3>Mappen van kolommen</h3>
+                <p class="alert alert-info">
+                    Geef in het formulier hiernaast aan welke kolommen de juiste HG identifiers bevatten; en welke
+                    kolommen voor berekeningen en beroepen etc. gebruikt kunnen worden. Kies telkens de juiste kolom of
+                    laat het veld leeg.<br><br>
+                    Voor de laatste twee velden kun je (mbv de shift-toets) meerdere waardes selecteren.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+

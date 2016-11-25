@@ -1,0 +1,68 @@
+{% extends "::base.html.twig" %}
+
+{% set active_page = 'map' %}
+
+{% block content %}
+    <div id="map"></div>
+
+    <div id="legend">
+        <h4 id="datasetTitle">Alle datasets op de kaart</h4>
+        <p>Overzicht van alle datasets (met data op pand-niveau).</p>
+        <div id="properties"></div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+
+        var cache = {};
+
+        $(document).ready(function () {
+
+            // init map first
+            var map = L.map('map', {
+                center: [52.16, 4.49], // leiden
+                zoom: 17,
+            });
+
+            map.addLayer(cartodb);
+
+            var overlayMaps = [
+                {
+                    group: "Datasets",
+                    collapsed: true,
+                    layers: []
+                }
+            ];
+            var panel = new L.Control.PanelLayers(baseMaps,overlayMaps, { collapsibleGroups: true }).addTo(map);
+
+            // fetch available datasets
+            var datasets = $.ajax({url: '{{ app.request.baseUrl }}/api/geojson/building'});
+            datasets.then(function (data) {
+                $.each(data, function (index, file) {
+
+                    loadGeoJson(file.id, "{{ app.request.baseUrl }}/api/geojson/building", cache, function (data) {
+                        var l = L.geoJson(data, {
+                            style: { color: divergingColors[index], weight: 2, opacity: 0.8, fillOpacity: 0.65 },
+                            onEachFeature: handleFeature
+                        });
+                        // add to control
+                        panel.addOverlay(l, '<span class="fa fa-square" style="color: ' + divergingColors[index] + '"></span>&nbsp;' + file.title, 'Datasets');
+
+                        // add to map
+//                        if (index == 0){
+//                            map.addLayer(l);
+//                            map.fitBounds(l.getBounds(), {
+//                                padding: [0, 0]
+//                            });
+//                        }
+                    });
+                });
+            });
+
+        });
+
+    </script>
+
+{% endblock %}
