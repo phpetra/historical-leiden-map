@@ -112,7 +112,7 @@ class DataSet implements \JsonSerializable
 
     /**
      *
-     * @ORM\Column(type="string", unique=true, length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @var string
      */
     private $pdfName;
