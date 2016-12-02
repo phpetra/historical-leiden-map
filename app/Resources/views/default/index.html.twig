@@ -2,42 +2,105 @@
 
 {% block content %}
     <div class="container">
+
         <div class="row">
-            <div class="col-xs-12 well">
+            <div class="col-xs-8">
                 <h1>Historisch Leiden in kaart</h1>
+                <p class="bit-bigger">
+                    biedt een digitale toegang tot historische kaarten en geografisch
+                    ontsloten gegevens over de geschiedenis van de stad. Deze webapplicatie is bedoeld voor
+                    belangstellenden die kaarten en gekoppelde gegevens willen raadplegen of die hun eigen geografisch
+                    ontsluitbare onderzoeksgegevens willen koppelen.
+                </p>
+
+                <p class="bit-bigger">
+                    Voor het gebruik van de onderzoeksapplicatie kan de handleiding geraadpleegd worden <a href="">[link invoegen]</a>.
+                    De geboden infrastructuur maakt het mogelijk om ‘kaarten’ en ‘data’ digitaal aan elkaar te koppelen
+                    en ruimtelijk te analyseren op verschillende niveaus. Dit kan in deze fase van het project op het
+                    niveau van de negentiende-eeuwse wijken, de middeleeuwse en vroegmoderne bonnen en percelen. De
+                    basiskaart is de huidige topografische situatie (BAG-kaart). Daarnaast kunnen tien gegeorefereerde
+                    achtergrondkaarten worden geselecteerd, waaronder de gevectoriseerde kaarten uit het Straten- en
+                    Grachtenboek (1583-1604).
+                    </p>
+                <p class="bit-bigger">
+                    De functionaliteit van de kaartapplicatie is momenteel nog beperkt, maar het streven is om deze in
+                    de toekomst verder te ontwikkelen. Naast deze webapplicatie ontsluit Historisch Leiden in kaart
+                    historische kaarten over ‘Leiden rond 1600’ via kaartviewers op de website van ELO
+                    (<a href="http://www.leidseregioinkaart.nl/kaarten/hlik/">www.leidseregioinkaart.nl/kaarten/hlik/</a> en <a href="http://www.leidseregioinkaart.nl/kaarten/1583/">www.leidseregioinkaart.nl/kaarten/1583/</a>) en de verrijkte
+                    kadastrale kaart van 1832 via de website van HISGIS (<a href="http://www.hisgis.nl">www.hisgis.nl</a>).
+                </p>
+
+                <h3>Consortium</h3>
+                <p class="bit-bigger">
+                    Historisch Leiden in Kaart (HLK) is opgezet door een consortium van Universiteit Leiden (UL),
+                    Universiteit van Amsterdam/Rijksuniversiteit Groningen (UvA/RUG) en Erfgoed Leiden en Omstreken
+                    (ELO). Verder is er samengewerkt met HISGIS (Fryske Akademy). Het projectteam in alfabetische
+                    volgorde: Petra Dreiskämper (Grobbel&Dreis), Jan Dröge (Bureau voor bouwhistorie), Ellen Gehring
+                    (ELO), Johan Feikens (HISGIS Fryske Akademy), Hans Mol (HISGIS Fryske Akademy), Roos van Oosten (UL,
+                    projectleider) Arie van Steensel (UvA/RUG, projectleider).
+                </p>
+                <p class="bit-bigger">
+                    Een woord van dank aan voor het meedenken met het projectteam (in alfabetische volgorde): Janna
+                    Coomans (UvA), Heidi Deneweth (VUB), Walter Hasselo (ELO), Martin Hooymans, Menne Kosian (RCE),
+                    Marcel IJsselstijn (UL), Emiel van der Hoeven (vrijwilliger ELO), Bram Vannieuwenhuyze (UvA) en Kees
+                    Walle.
+                    </p>
+
+                <h3>Subsidie</h3>
+                <p class="bit-bigger">
+                    Financiële steun van NWO (Alfa Meerwaarde subsidie) en DANS (Kleine Data Projecten subsidie) maakten
+                    de realisatie van respectievelijk fase 1 en fase 2 mogelijk. Het projectteam werkt aan een verdere
+                    ontwikkeling van de functionaliteit van de kaartapplicatie en digitale ontsluiting van kaarten en
+                    data.
+                </p>
 
             </div>
-        </div>
 
-        <div class="row">
             <div class="col-md-4">
-                <h2>Datasets</h2>
-                <p class="bit-bigger">Deze site bevat een aantal datasets met onderzoeksgegevens ...</p>
-            </div>
-            <div class="col-md-8">
                 <h2>Kaarten</h2>
                 <p class="bit-bigger">
                     Er zijn twee mogelijkheden om de data te bekijken:
                 </p>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h3><a href="{{ path('maps') }}">Beschikbare datasets</a></h3>
-                        <p class="bit-bigger">Via die pagina krijg je meer informatie van de datasets en daarvandaan kun je per set naar de veschillende kaartlagen waarop je de data op verschillende manieren kunt filteren en analyseren.
-                            Per dataset is aangegeven welke kaartlagen beschikbaar zijn (panden, bonnen en/of wijken).
-                        </p>
-                    </div>
+                <h3><a href="{{ path('maps') }}">Beschikbare datasets</a></h3>
+                <p class="bit-bigger">Via die pagina krijg je meer informatie van de datasets en daarvandaan kun
+                    je per set naar de veschillende kaartlagen waarop je de data op verschillende manieren kunt
+                    filteren en analyseren.
+                    Per dataset is aangegeven welke kaartlagen beschikbaar zijn (panden, bonnen en/of wijken).
+                </p>
+                <hr/>
 
-                    <div class="col-md-6">
-                        <h3><a href="{{ path('panden') }}">Overzichtskaart datasets</a></h3>
-                        <p class="bit-bigger">Daar zie je alle datasets die data bevatten die op pand-niveau ontsloten is.
-                            Per dataset is een kaartlaag gemaakt en die kun je allemaal naast elkaar aan of uit klikken om zo de
-                            gegevens van (de bewoners van) de panden te bekijken.
-                        </p>
-                    </div>
-                </div>
-
+                <h3><a href="{{ path('panden') }}">Overzichtskaart datasets</a></h3>
+                <p class="bit-bigger">Daar zie je alle datasets die data bevatten die op pand-niveau ontsloten
+                    is.
+                    Per dataset is een kaartlaag gemaakt en die kun je allemaal naast elkaar aan of uit klikken
+                    om zo de
+                    gegevens van (de bewoners van) de panden te bekijken.
+                </p>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img src="{{ asset('/img/DANS.png') }}" width="200"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="{{ asset('/img/ELO.png') }}"  width="200"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="{{ asset('/img/HISGIS.png') }}" width="200"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="{{ asset('/img/NWO.jpg') }}" width="200"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="{{ asset('/img/UL.jpg') }}" width="200"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
