@@ -20,6 +20,7 @@
                         <th>Naam</th>
                         <th>Dataset</th>
                         <th>Gemaakt</th>
+                        <th>PDF</th>
                         <th>Status</th>
                         <th>Opties</th>
                         <th>Klaar</th>
@@ -41,6 +42,12 @@
                             </td>
                             <td>{{ set.createdAt|date('d-m-Y H:i:s') }}</td>
                             <td>
+                                {% if set.pdfName is not empty %}
+                                    <a href="{{ vich_uploader_asset(set, 'pdfFile') }}"
+                                       title="Download de PDF met de volledige beschrijving">{{ set.pdfName }}</a>
+                                {% endif %}
+                            </td>
+                            <td>
                                 {% if set.status is null %}
                                     in voorbereiding
                                 {% else %}
@@ -59,16 +66,18 @@
                                         mapping
                                     </a>
 
-                                    <a href="{{ path('manage-csv-geocode', {'file': set.csvName, 'datasetId': set.id }) }}"
-                                       class="btn btn-xs btn-info" title="Voeg geometrieën toe">
-                                        <i class="fa fa-map-marker"></i> geocodeer
-                                    </a>
-
-                                    {% if app.user.username == 'dreis' %}
-                                        <a href="{{ path('manage-csv-geojson', {'file': set.csvName, 'datasetId': set.id }) }}"
-                                           class="btn btn-xs btn-warning" title="Genereer de geoJSON files opnieuw">
-                                            geojson
+                                    {% if set.csvName is not empty %}
+                                        <a href="{{ path('manage-csv-geocode', {'file': set.csvName, 'datasetId': set.id }) }}"
+                                           class="btn btn-xs btn-info" title="Voeg geometrieën toe">
+                                            <i class="fa fa-map-marker"></i> geocodeer
                                         </a>
+
+                                        {% if app.user.username == 'dreis' %}
+                                            <a href="{{ path('manage-csv-geojson', {'file': set.csvName, 'datasetId': set.id }) }}"
+                                               class="btn btn-xs btn-warning" title="Genereer de geoJSON files opnieuw">
+                                                geojson
+                                            </a>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
 

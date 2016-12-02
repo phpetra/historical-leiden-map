@@ -135,3 +135,7 @@ vich_uploader:
             uri_prefix:         /images/products
             #upload_destination: '%kernel.root_dir%/../web/images/products'
             upload_destination: elo_filesystem
+        dataset_pdf:
+            uri_prefix:         /pdf
+            #upload_destination: "%kernel.root_dir%/../web/pdf"
+            upload_destination: elo_filesystem

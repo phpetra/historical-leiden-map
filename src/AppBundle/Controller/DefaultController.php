@@ -8,6 +8,7 @@ use Doctrine\Common\Cache\CacheProvider;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DefaultController extends Controller
 {
@@ -107,5 +108,26 @@ class DefaultController extends Controller
         return 'Pdx\DatasetBundle\Entity\DataSet';
     }
 
+    /**
+     * Donwload / view a pdf file
+     *
+     * @Route("/pdf/{file}", name="pdf-download")
+     *
+     * @param string $file
+     * @return Response
+     */
+    public function pdfAction($file)
+    {
+        $filepath = '/' . $file;
+        $fileContent = $this->get('elo_filesystem')->read($filepath);
 
+        $response = new Response($fileContent);
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $file
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
+        return $response;
+    }
 }

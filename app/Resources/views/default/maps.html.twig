@@ -21,7 +21,7 @@
                         <th>Beschrijving</th>
                         <th>Versie</th>
                         <th>Periode</th>
-                        <th>Auteur</th>
+                        <th>PDF</th>
                         <th>Originele bron</th>
                         <th>Panden</th>
                         {#<th>Straten</th>#}
@@ -47,7 +47,10 @@
                                 {{ set.period }}
                             </td>
                             <td>
-                                {{ set.credits }}
+                                {% if set.pdfName is not empty %}
+                                <a href="{{ vich_uploader_asset(set, 'pdfFile') }}"
+                                   title="Download de PDF met de volledige beschrijving">{{ set.pdfName }}</a>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if set.website is not empty %}

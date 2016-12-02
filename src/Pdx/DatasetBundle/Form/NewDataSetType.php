@@ -23,7 +23,7 @@ class NewDataSetType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label'       => 'Titel van je Dataset. Geef svp een korte, heldere titel.',
+                'label'       => 'Titel van de dataset (geef een beknopte, heldere titel)',
                 'attr'        => ['placeholder' => 'Titel'],
                 'required'    => true,
                 'constraints' => [
@@ -38,7 +38,7 @@ class NewDataSetType extends AbstractType
                 'required' => false,
             ])
             ->add('description', TextareaType::class, [
-                'label'       => 'Ruimte voor een uitgebreide beschrijving van je bestand.',
+                'label'       => 'Ruimte voor een uitgebreide beschrijving van je bestand',
                 'attr'        => [
                     'placeholder' => 'Beschrijving',
                     'class'       => 'pdx-textarea'
@@ -54,10 +54,11 @@ class NewDataSetType extends AbstractType
                 'label'    => 'Versie van het bestand',
                 'required' => false,
             ])
-            ->add('credits', TextType::class, [
-                'label'    => 'Bewerker of maker van de dataset',
-                'required' => false,
-            ])
+            ->add('pdfFile', VichFileType::class, array(
+                'required'      => false,
+                'allow_delete'  => false, // not mandatory, default is true
+                'download_link' => false, // not mandatory, default is true
+            ))
             ->add('website', TextType::class, [
                 'label'    => 'Link naar de originele bron',
                 'required' => false,

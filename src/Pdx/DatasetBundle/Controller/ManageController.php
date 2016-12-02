@@ -122,7 +122,7 @@ class ManageController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            //$entity = $form->getData();
+            $entity = $form->getData();
 
             // validation on file names since that is not working the default way
             /** @var UploadedFile $file */
@@ -139,15 +139,22 @@ class ManageController extends Controller
                 }
             }
 
-            $em->persist($entity);
-            $em->flush();
+            try {
+                $em->persist($entity);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add(
+                    'notice',
+                    'Opgeslagen!'
+                );
 
-            $this->get('session')->getFlashBag()->add(
-                'notice',
-                'Opgeslagen!'
-            );
+                return $this->redirect($this->generateUrl('manage-dataset-preview', ['id' => $entity->getId()]));
+            } catch (FileExistsException $e) {
+                $this->get('session')->getFlashBag()->add(
+                    'error',
+                    'Sorry, dat bestand bestaat al. Geef je bestand s.v.p. een andere naam en upload opnieuw.'
+                );
+            }
 
-            return $this->redirect($this->generateUrl('manage-dataset-preview', ['id' => $entity->getId()]));
         }
 
         return $this->render('PdxDatasetBundle:Manage:new.html.twig', [
@@ -254,8 +261,11 @@ class ManageController extends Controller
             'Pdx\DatasetBundle\Form\DataSetType',
             $entity
         );
+
         $form->handleRequest($request);
         if ($form->isValid()) {
+
+            //$entity = $form->getData();
 
             // validation on file names since that is not working the default way
             /** @var UploadedFile $file */
@@ -271,8 +281,15 @@ class ManageController extends Controller
                 }
             }
 
+            // werid shit needed to persist the uploaded file
+            /** @var UploadedFile $file */
+            $file = $entity->getPdfFile();
+            if ($file instanceof UploadedFile) {
+                $entity->setDescription($entity->getDescription() . ' ');
+            }
 
             try {
+                $em->persist($entity);
                 $em->flush();
                 $this->get('session')->getFlashBag()->add(
                     'notice',
@@ -283,7 +300,7 @@ class ManageController extends Controller
             } catch (FileExistsException $e) {
                 $this->get('session')->getFlashBag()->add(
                     'error',
-                    'Sorry, dat bestand bestaat al. Geef je CSV-bestand s.v.p. een andere naam en upload opnieuw.'
+                    'Sorry, dat bestand bestaat al. Geef je bestand s.v.p. een andere naam en upload opnieuw.'
                 );
             }
 

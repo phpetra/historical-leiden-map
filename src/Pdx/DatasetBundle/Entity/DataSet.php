@@ -100,6 +100,24 @@ class DataSet implements \JsonSerializable
     private $csvName;
 
     /**
+     * @Vich\UploadableField(mapping="dataset_pdf", fileNameProperty="pdfName")
+     *
+     * @var File
+     * @Assert\File(
+     *     mimeTypes = {"application/pdf", "application/x-pdf"},
+     *     mimeTypesMessage = "Upload een geldig PDF bestand"
+     * )
+     */
+    private $pdfFile;
+
+    /**
+     *
+     * @ORM\Column(type="string", unique=true, length=255, nullable=true)
+     * @var string
+     */
+    private $pdfName;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="credits", type="text", nullable=true)
@@ -531,6 +549,39 @@ class DataSet implements \JsonSerializable
     {
         $this->version = $version;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPdfFile()
+    {
+        return $this->pdfFile;
+    }
+
+    /**
+     * @param mixed $pdfFile
+     */
+    public function setPdfFile($pdfFile)
+    {
+        $this->pdfFile = $pdfFile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPdfName()
+    {
+        return $this->pdfName;
+    }
+
+    /**
+     * @param string $pdfName
+     */
+    public function setPdfName($pdfName)
+    {
+        $this->pdfName = $pdfName;
+    }
+
 
 }
 

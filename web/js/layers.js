@@ -54,7 +54,7 @@ var ahrend1920 = L.esri.tiledMapLayer('http://tiles.arcgis.com/tiles/brgRNnNj6DC
     maxZoom: 20,
     maxNativeZoom: 19
 });
-var straetbouc = L.esri.tiledMapLayer('http://tiles.arcgis.com/tiles/brgRNnNj6DClnBDf/arcgis/rest/services/Straetbouc/MapServer', {
+var straetbouc = L.esri.tiledMapLayer('http://tiles.arcgis.com/tiles/brgRNnNj6DClnBDf/arcgis/rest/services/stratengrachtenboek/MapServer', {
     'opacity': 0.8,
     maxZoom: 20,
     maxNativeZoom: 19
