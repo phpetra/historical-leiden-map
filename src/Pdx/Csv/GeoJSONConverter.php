@@ -109,10 +109,11 @@ class GeoJSONConverter
         if ($this->mapping->building !== null) {
             $this->createBuildingGeoJson($originalFile, $columns['building_geometry'], $useCachedVersion);
         }
-        if ($this->mapping->street !== null) {
+
+        //if ($this->mapping->street !== null) {
             //$this->convertColumnsToGeoJSONPerHgType($originalFile, 'street');
             //$this->createStreetGeoJson($originalFile, $columns['street_geometry'], $useCachedVersion);
-        }
+        //}
         if ($this->mapping->borough !== null) {
             $this->convertColumnsToGeoJSONPerHgType($originalFile, 'borough');
         }

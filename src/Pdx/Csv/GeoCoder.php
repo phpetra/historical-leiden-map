@@ -66,10 +66,11 @@ class GeoCoder
             $headers[] = 'building_geometry';
             $columnsWithHgIdentifiers[] = $this->mapping->building;
         }
-        if ($this->mapping->street !== null) {
-            $headers[] = 'street_geometry';
-            $columnsWithHgIdentifiers[] = $this->mapping->street;
-        }
+        // turning of street level
+//        if ($this->mapping->street !== null) {
+//            $headers[] = 'street_geometry';
+//            $columnsWithHgIdentifiers[] = $this->mapping->street;
+//        }
         if ($this->mapping->borough !== null) {
             $headers[] = 'borough_geometry';
             $columnsWithHgIdentifiers[] = $this->mapping->borough;
