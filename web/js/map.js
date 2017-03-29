@@ -35,15 +35,15 @@ function properties2Table(properties) {
 // Add displayinging props to the layer
 function handleFeature(feature, layer) {
     layer.on({
-        mouseover: showProperties,
-        mouseout: clearProperties
+        click: showProperties
     });
 }
+
 
 // Display the properties in a nice steady HTML table
 function showProperties(e) {
     var properties = e.target.feature.properties;
-    var html = '<table class="table table-bordered table-condensed">';
+    var html = '<button id="close-props" class="btn btn-sm btn-warning pull-right" onclick="clearProperties()" title="Sluit data tab"><i class="fa fa-close"></i></button><table class="table table-bordered table-condensed">';
     for (var prop in properties) {
         if (properties.hasOwnProperty(prop)) {
             // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
@@ -55,7 +55,7 @@ function showProperties(e) {
     //return html;
 }
 
-function clearProperties(e) {
+function clearProperties() {
     document.getElementById("properties").innerHTML = "";
 }
 
