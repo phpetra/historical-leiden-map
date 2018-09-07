@@ -40,14 +40,10 @@ class DefaultController extends Controller
      */
     public function listMapsAction($option = 'all')
     {
-        $criteria = new Criteria();
-        $criteria->where(Criteria::expr()->neq('title', 'Testset 1611'));
-
-        //$result = $entityRepository->matching($criteria);
         return $this->render('default/maps.html.twig', [
             'datasets' => $this->getDoctrine()
                 ->getRepository($this->getEntityName())
-                ->matching($criteria)
+                ->findViewableDatasets('d.title', 'ASC')
         ]);
     }
 

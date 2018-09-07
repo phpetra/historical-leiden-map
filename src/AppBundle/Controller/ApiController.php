@@ -94,8 +94,8 @@ class ApiController extends Controller
     {
         return $this->getDoctrine()
             ->getRepository($this->getEntityName())
-            //->findBy(['visible' => true])
-            ->findAll();
+            ->findViewableDatasets('d.title', 'ASC')
+            ;
     }
 
     /**
