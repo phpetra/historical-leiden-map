@@ -3,8 +3,8 @@
 namespace AppBundle\Controller;
 
 
-
 use Doctrine\Common\Cache\CacheProvider;
+use Doctrine\Common\Collections\Criteria;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,11 +40,14 @@ class DefaultController extends Controller
      */
     public function listMapsAction($option = 'all')
     {
+        $criteria = new Criteria();
+        $criteria->where(Criteria::expr()->neq('title', 'Testset 1611'));
+
+        //$result = $entityRepository->matching($criteria);
         return $this->render('default/maps.html.twig', [
             'datasets' => $this->getDoctrine()
                 ->getRepository($this->getEntityName())
-                //->findBy(['visible' => true])
-                ->findAll()
+                ->matching($criteria)
         ]);
     }
 
@@ -128,6 +131,7 @@ class DefaultController extends Controller
         );
 
         $response->headers->set('Content-Disposition', $disposition);
+
         return $response;
     }
 }
