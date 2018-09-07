@@ -89,8 +89,6 @@ class ApiClient
             return new ApiResponse($this->cacheDriver->fetch($query));
         }
 
-
-
         return $this->getGeoJSONResponse($query);
     }
 

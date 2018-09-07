@@ -8,8 +8,6 @@ use Pdx\DatasetBundle\Entity\DataSet;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -34,7 +32,6 @@ class ManageCSVController extends Controller
     {
         $logger = $this->get('logger');
         $logger->addInfo('Offload to cli: geocoding for file ' . $file);
-
 
         if ($this->get('kernel')->getEnvironment() === 'prod') {
             $root = $this->getParameter('kernel.root_dir') . '/../bin/console';
@@ -93,6 +90,7 @@ class ManageCSVController extends Controller
      * @param $file
      * @param $type
      * @return Response
+     * @throws \League\Flysystem\FileNotFoundException
      */
     public function dowloadAction($file, $type = 'csv')
     {

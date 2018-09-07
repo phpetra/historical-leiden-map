@@ -3,18 +3,16 @@
 namespace Pdx\DatasetBundle\Controller;
 
 
+use Doctrine\Common\Cache\CacheProvider;
 use League\Flysystem\FileExistsException;
 use Pdx\Csv\CsvHandler;
 use Pdx\DatasetBundle\Entity\DataSet;
-use Pdx\DatasetBundle\Form\DataSetMapType;
-use Pdx\DatasetBundle\Form\DataSetType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -66,6 +64,26 @@ class ManageController extends Controller
     }
 
     /**
+     * Gives users the ability to flush the Geocoder cache
+     * So new geometries are fetched from the Geocoder in stead of from the cache
+     *
+     * @Route("/clear-cache", name="delete-geocoder-cache")
+     * @Method({"GET"})
+     */
+    public function clearCacheAction()
+    {
+        /** @var CacheProvider $cacheProvider */
+        $cacheProvider = $this->container->get('hg_cache');
+        $cacheProvider->deleteAll();
+
+        $this->get('session')->getFlashBag()->add(
+            'notice',
+            'De cache met geometrieën uit de geocoder is geleegd!'
+        );
+        return $this->redirect($this->generateUrl('manage-dataset-index'));
+    }
+
+    /**
      * List a users DataSets
      *
      * @Route("/", name="manage-dataset-index")
@@ -73,6 +91,10 @@ class ManageController extends Controller
      */
     public function indexAction()
     {
+        /** @var CacheProvider $cacheProvider */
+        $cacheProvider = $this->container->get('hg_cache');
+        $cacheProvider->flushAll();
+
         $rows = $this->getDoctrine()
             ->getRepository($this->getEntityName())
             ->findBy(['creator' => $this->getUser()]

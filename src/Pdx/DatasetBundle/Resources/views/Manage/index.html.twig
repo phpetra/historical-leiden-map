@@ -2,8 +2,9 @@
 
 {% block content %}
     <div class="container">
+
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <h1>Mijn datasets</h1>
 
                 {% if datasets is empty %}
@@ -13,6 +14,15 @@
                 <p>
                     Hieronder het overzicht van je datasets.
                 </p>
+            </div>
+            <div class="col-md-6 well-sm">
+                <a href="{{ path('delete-geocoder-cache') }}" class="pull-right btn btn-info">Leeg de cache</a>
+                <p>Als er nieuwe geometrieën zijn in de geocoder die je wilt gebruiken, leeg dan eerst de cache. <strong>Let op</strong>: dit betekent wel dat het geocoderen veel langer gaat duren.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
 
                 <table class="table table-striped table-bordered table-hover">
                     <thead>

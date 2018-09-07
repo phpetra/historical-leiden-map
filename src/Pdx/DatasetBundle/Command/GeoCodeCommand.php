@@ -27,7 +27,6 @@ class GeoCodeCommand extends ContainerAwareCommand
             ;
     }
 
-
     protected function processTheQueue($output)
     {
         $dataSets = $this->getContainer()->get('doctrine')
@@ -100,7 +99,6 @@ De data kan nu gebruikt worden om een kaart te maken.
         $this->geoCoder = $this->getContainer()->get('pdx_csv.geocoder');
         $this->em = $this->getContainer()->get('doctrine')->getManager();
         $this->logger = $this->getContainer()->get('logger');
-
 
         if ($file === 'all') {
             return $this->processTheQueue($output);
