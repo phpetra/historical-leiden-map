@@ -83,8 +83,9 @@ function populateFilterOptions(div, columns) {
     $select.find('option').remove();
     $select.append('<option value="">Kies een kolom</option>');
     $.each(columns, function (key, value) {
+        replaced = value.replace(' ', '_');
         //$select.append('<option value=' + key + '>' + value + '</option>');
-        $select.append('<option value=' + value + '>' + value + '</option>');
+        $select.append('<option value=' + replaced + '>' + value + '</option>');
     });
 }
 

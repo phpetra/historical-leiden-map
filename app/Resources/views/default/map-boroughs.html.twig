@@ -6,7 +6,7 @@
     <div id="map"></div>
 
     <div id="legend">
-        <h4>Kleurenwaaier</h4>
+        <h4>Kleurenwaaiert</h4>
         <h4 id="datasetTitle"></h4>
 
         <label>Beschikbare filters</label><br/>
@@ -154,6 +154,8 @@
 
                 /** Displays all unique values of one column as individual layers (alle "beroepen" bv) */
                 function displayChloroThingies(dataset, columnName, columnValue) {
+                    // we have replaced a space with underscores, now changing it back
+                    columnValue = columnValue.replace('_', ' ');
                     clearControls();
                     $('.spinner-overlay').removeClass('hide');
 
