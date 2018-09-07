@@ -91,10 +91,6 @@ class ManageController extends Controller
      */
     public function indexAction()
     {
-        /** @var CacheProvider $cacheProvider */
-        $cacheProvider = $this->container->get('hg_cache');
-        $cacheProvider->flushAll();
-
         $rows = $this->getDoctrine()
             ->getRepository($this->getEntityName())
             ->findBy(['creator' => $this->getUser()]

@@ -27,6 +27,7 @@
                         {#<th>Straten</th>#}
                         <th>Bonnen</th>
                         <th>Wijken</th>
+                        <th>Data</th>
                     </tr>
                     </thead>
 
@@ -80,6 +81,11 @@
                                 {% if set.mapping.neighbourhood is not null %}
                                     <a href="{{ path('map-neighbourhoods', {set: set.id }) }}" class="btn-sm btn-info" title="Bekijk op wijk niveau">wijken</a>
                                 {% endif %}
+                            </td>
+                            <td>
+                        {% if set.mapping.building is not null %}
+                                <a href="{{ path('download-geojson', {set: set.id }) }}" class="btn-sm btn-success" title="Geojson bestand downloaden">download</a>
+                            {% endif %}
                             </td>
                         </tr>
                         {% endif %}

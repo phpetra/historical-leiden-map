@@ -3,8 +3,7 @@
 namespace AppBundle\Controller;
 
 
-use Doctrine\Common\Cache\CacheProvider;
-use Doctrine\Common\Collections\Criteria;
+use Pdx\DatasetBundle\Entity\DataSet;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,7 +45,6 @@ class DefaultController extends Controller
                 ->findViewableDatasets('d.title', 'ASC')
         ]);
     }
-
 
     /**
      * Display the maps that are available at the HGBuildings level
@@ -128,6 +126,43 @@ class DefaultController extends Controller
 
         $response->headers->set('Content-Disposition', $disposition);
 
+        return $response;
+    }
+
+    /**
+     * Let's users download the geojson
+     *
+     * @Route("/download/{set}", name="download-geojson", requirements={"set": "\d+"})
+     * @param $file
+     * @param $type
+     * @return Response
+     * @throws \League\Flysystem\FileNotFoundException
+     */
+    public function downloadBuildingGeoJSONAction($set)
+    {
+        $dataset = $this->getDoctrine()->getRepository(DataSet::class)->find($set);
+        if (!$dataset) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Sorry, die bestaat niet!'
+            );
+
+            return $this->redirect($this->generateUrl('maps'));
+        }
+
+        $filepath = '/geojson/building.' . $dataset->getCsvName();
+        $filename = str_replace('.csv', '.json', $dataset->getCsvName());
+
+        $fileContent = $this->get('elo_filesystem')->read($filepath);
+
+        $response = new Response($fileContent);
+
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
         return $response;
     }
 }
